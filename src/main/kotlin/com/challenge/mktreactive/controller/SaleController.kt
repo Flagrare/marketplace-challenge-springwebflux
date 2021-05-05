@@ -2,7 +2,7 @@ package com.challenge.mktreactive.controller
 
 import com.challenge.mktreactive.dto.SaleDTO
 import com.challenge.mktreactive.entity.Sale
-import com.example.marketplace.service.SaleService
+import com.challenge.mktreactive.service.SaleService
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import java.util.logging.Logger

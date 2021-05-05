@@ -2,7 +2,7 @@ package com.challenge.mktreactive.controller
 
 import com.challenge.mktreactive.data.RatingVO
 import com.challenge.mktreactive.dto.RatingDTO
-import com.example.marketplace.service.RatingService
+import com.challenge.mktreactive.service.RatingService
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import java.util.logging.Logger

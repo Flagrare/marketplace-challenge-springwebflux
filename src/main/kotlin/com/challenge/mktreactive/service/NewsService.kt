@@ -1,40 +1,48 @@
 package com.example.marketplace.service
 
-import com.example.marketplace.Endpoints
+import com.challenge.mktreactive.Endpoints
 import com.challenge.mktreactive.data.NewsVO
+import com.challenge.mktreactive.entity.Article
 import com.challenge.mktreactive.repository.ArticleRepository
 import com.challenge.mktreactive.repository.CategoryRepository
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Service
 import org.springframework.web.client.RestTemplate
+import reactor.core.publisher.Flux
+import reactor.core.publisher.Mono
+import reactor.core.scheduler.Schedulers
 
 @Service
-class NewsService(val articleRepository: ArticleRepository, val categoryRepository: CategoryRepository) {
+class NewsService() {
+
+    @Autowired
+    protected lateinit var articleRepository: ArticleRepository
+
+    @Autowired
+    protected lateinit var categoryRepository: CategoryRepository
 
     @Scheduled(cron = "0 0 */4 * * *")
     fun consumeNews() {
 
 //        val categories = Categories.javaClass.fields
-        val categories = categoryRepository.findAll()
+        categoryRepository.findAll()
+            .flatMap { category ->
+                var newsResponseObject: NewsVO? = RestTemplate().getForObject(
+                    Endpoints.NEWS_API_URL_WITH_CATEGORY + category.name,
+                    NewsVO::class.java
+                )
 
-        categories.forEach { category ->
+                var articlesList =
+                    newsResponseObject?.articles?.toMutableList()
 
-            var newsResponseObject: NewsVO? = RestTemplate().getForObject(
-                Endpoints.NEWS_API_URL_WITH_CATEGORY + category.name,
-                NewsVO::class.java
-            )
 
-            var articlesList =
-                newsResponseObject?.articles?.toMutableList()
-
-            if (articlesList != null) {
-
-                articlesList.forEach { article ->
+                articlesList?.forEach { article ->
                     article.category = category
                 }
 
-                articleRepository.saveAll(articlesList)
+                articleRepository.saveAll(articlesList!!.toList())
+
             }
-        }
     }
 }

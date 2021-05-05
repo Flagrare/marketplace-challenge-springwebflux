@@ -1,6 +1,6 @@
 package com.challenge.mktreactive.controller
 
-import com.example.marketplace.service.ProductService
+import com.challenge.mktreactive.service.ProductService
 import com.challenge.mktreactive.data.ProductVO
 import com.challenge.mktreactive.dto.ProductDTO
 import com.challenge.mktreactive.entity.Product

@@ -1,6 +1,6 @@
 package com.challenge.mktreactive.repository
 
 import com.challenge.mktreactive.entity.Event
-import org.springframework.data.mongodb.repository.MongoRepository
+import org.springframework.data.mongodb.repository.ReactiveMongoRepository
 
-interface EventRepository : MongoRepository<Event, String>
+interface EventRepository : ReactiveMongoRepository<Event, String>

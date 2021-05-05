@@ -2,7 +2,7 @@ package com.challenge.mktreactive.controller
 
 import com.challenge.mktreactive.data.CategoryVO
 import com.challenge.mktreactive.dto.CategoryDTO
-import com.example.marketplace.service.CategoryService
+import com.challenge.mktreactive.service.CategoryService
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import java.util.logging.Logger

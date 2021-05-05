@@ -1,6 +1,6 @@
 package com.challenge.mktreactive.repository
 
 import com.challenge.mktreactive.entity.User
-import org.springframework.data.mongodb.repository.MongoRepository
+import org.springframework.data.mongodb.repository.ReactiveMongoRepository
 
-interface UserRepository : MongoRepository<User, String>
+interface UserRepository : ReactiveMongoRepository<User, String>

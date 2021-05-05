@@ -1,26 +1,28 @@
-package com.example.marketplace.service
+package com.challenge.mktreactive.service
 
 import com.challenge.mktreactive.dto.CategoryDTO
 import com.challenge.mktreactive.entity.Category
 import com.challenge.mktreactive.exception.NotFoundException
 import com.challenge.mktreactive.repository.CategoryRepository
 import org.springframework.stereotype.Service
+import reactor.core.publisher.Flux
+import reactor.core.publisher.Mono
 
 @Service
 class CategoryService(val categoryRepository: CategoryRepository) {
 
-    fun findAll(): List<Category> =
+    fun findAll(): Flux<Category> =
         categoryRepository.findAll()
 
-    fun findById(id: String): Category =
+    fun findById(id: String): Mono<Category> =
         categoryRepository.findById(id)
-            .orElseThrow { NotFoundException("Category with id $id not found") }
+            .switchIfEmpty(Mono.error { NotFoundException("Category with id $id not found") })
 
 
-    fun findByName(name: String): Category =
+    fun findByName(name: String): Mono<Category> =
         categoryRepository.findByName(name)
 
-    fun createCategory(category: CategoryDTO): Category =
+    fun createCategory(category: CategoryDTO): Mono<Category> =
         categoryRepository.save(
             Category(
                 name = category.name,
@@ -28,21 +30,17 @@ class CategoryService(val categoryRepository: CategoryRepository) {
             )
         )
 
-    fun updateCategory(id: String, categoryDTO: CategoryDTO): Category {
-        val categoryToUpdate = findById(id)
+    fun updateCategory(id: String, categoryDTO: CategoryDTO): Mono<Category> = findById(id)
+        .flatMap { category ->
+            category.name = categoryDTO.name
+            category.desc = categoryDTO.desc
 
-        return categoryRepository.save(
-            categoryToUpdate.apply {
-                name = categoryDTO.name
-                desc = categoryDTO.desc
-            }
-        )
-    }
+            categoryRepository.save(category)
+        }
 
 
-    fun deleteById(id: String) {
-        val category = findById(id)
-
-        categoryRepository.delete(category)
-    }
+    fun deleteById(id: String): Mono<Void> = findById(id)
+        .flatMap { category ->
+            categoryRepository.delete(category)
+        }
 }
